@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>12</LangVersion>
+        <Configurations>Debug;Release;Debug R14</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="WixSharp.Core" Version="2.3.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Files\GPSrvtTab.dll" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="Files\GPSrvtTab.dll" />
+    </ItemGroup>
+
+</Project>

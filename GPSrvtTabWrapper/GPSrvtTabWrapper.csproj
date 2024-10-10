@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <TargetFramework>net462</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Autodesk.Revit.SDK" Version="2014.0.0">
+            <ExcludeAssets>runtime</ExcludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="Resources\zstdWrapperGO.exe" />
+        <EmbeddedResource Include="Resources\zstdWrapperGO.exe">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+        
+        <!--<None Remove="Resources\GPSrvtTabVersionR19.zst" />
+        <EmbeddedResource Include="Resources\GPSrvtTabVersionR19.zst">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>-->
+        <None Remove="Resources\GPSrvtTabVersionR20.zst" />
+        <EmbeddedResource Include="Resources\GPSrvtTabVersionR20.zst">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <None Remove="Resources\GPSrvtTabVersionR21.zst" />
+        <EmbeddedResource Include="Resources\GPSrvtTabVersionR21.zst">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <None Remove="Resources\GPSrvtTabVersionR22.zst" />
+        <EmbeddedResource Include="Resources\GPSrvtTabVersionR22.zst">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <None Remove="Resources\GPSrvtTabVersionR23.zst" />
+        <EmbeddedResource Include="Resources\GPSrvtTabVersionR23.zst">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <None Remove="Resources\GPSrvtTabVersionR24.zst" />
+        <EmbeddedResource Include="Resources\GPSrvtTabVersionR24.zst">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <None Remove="Resources\GPSrvtTabVersionR25.zst" />
+        <EmbeddedResource Include="Resources\GPSrvtTabVersionR25.zst">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+    </ItemGroup>
+</Project>
