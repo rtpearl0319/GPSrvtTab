@@ -35,7 +35,7 @@ namespace GPSrvtTab
             {
                 t.Start();
                 
-                List<string> panelVerification = new List<string>();
+                //List<string> panelVerification = new List<string>();
                 
                 List<string> elecIdsUnCircuit = new List<string>();
                 
@@ -79,11 +79,11 @@ namespace GPSrvtTab
                      
                     var panelConnector = ElementGetConnector(panelFi);
                     
-                    if (panelConnector.ElectricalSystemType.ToString() != fixtureConnector.ElectricalSystemType.ToString())
+                    /*if (panelConnector.ElectricalSystemType.ToString() != fixtureConnector.ElectricalSystemType.ToString())
                     {
                         panelConnectorType = panelConnector.ElectricalSystemType.ToString();
                         panelVerification.Add(" Fixture Connector: " + fixtureConnector.ElectricalSystemType + " - " + fixtureInstance.Id);
-                    }
+                    }*/
 #endif
                     
                     ConnectorSet connectorSet = fixtureInstance.MEPModel.ConnectorManager.Connectors;
@@ -102,7 +102,7 @@ namespace GPSrvtTab
                         }
                     }
                 }
-                if (panelVerification.Count > 0)
+                /*if (panelVerification.Count > 0)
                 {
                     #if Revit2020 || Revit2021
 
@@ -112,7 +112,7 @@ namespace GPSrvtTab
                     
                     TaskDialog.Show("Could Not Verify Connector \n",  "Panel Connector: " + panelConnectorType + "\n"
                                                              + string.Join("\n", panelVerification));
-                }
+                }*/
 
                 if (elecIdsUnCircuit.Count > 0) 
                     TaskDialog.Show("Circuited Elements", "Elements Are Already Circuited\n"+ string.Join
