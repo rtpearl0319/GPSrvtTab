@@ -9,7 +9,7 @@ cd ..
 
 if %errorlevel%==0 (
     cd GPSrvtTabWrapper
-    call build.bat
+    call build-release.bat
     cd ..
 ) else (
     echo First build failed.

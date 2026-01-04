@@ -15,6 +15,7 @@
             2023  |  net48
             2024  |  net48
             2025  |  net8.0
+            2026  |  net8.0
         -->
 
         <LangVersion>latest</LangVersion>
@@ -24,8 +25,8 @@
         <DefineConstants>REVIT2022;WINFORMS</DefineConstants> <!-- Change based on default .net framework -->
         <RevitVersion>2022</RevitVersion>
         
-        <Configurations>Debug R14;Debug R15;Debug R16;Debug R17;Debug R18;Debug R19;Debug R20;Debug R21;Debug R22;Debug R23;Debug R24;Debug R25</Configurations>
-        <Configurations>$(Configurations);Release R14;Release R15;Release R16;Release R17;Release R18;Release R19;Release R20;Release R21;Release R22;Release R23;Release R24;Release R25</Configurations>
+        <Configurations>Debug R14;Debug R15;Debug R16;Debug R17;Debug R18;Debug R19;Debug R20;Debug R21;Debug R22;Debug R23;Debug R24;Debug R25;Debug R26</Configurations>
+        <Configurations>$(Configurations);Release R14;Release R15;Release R16;Release R17;Release R18;Release R19;Release R20;Release R21;Release R22;Release R23;Release R24;Release R25;Release R26</Configurations>
         <UseWPF>true</UseWPF>
 
     </PropertyGroup>
@@ -101,8 +102,15 @@
         <TargetFramework>net8.0-windows</TargetFramework>
         <DefineConstants>REVIT2025;WINFORMS</DefineConstants>
     </PropertyGroup>
+    
+    <PropertyGroup Condition="$(Configuration.Contains('R26'))">
+        <RevitVersion>2026</RevitVersion>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <DefineConstants>REVIT2026;WINFORMS</DefineConstants>
+    </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Autodesk.Revit.SDK" Version="2026.*" Condition="'$(RevitVersion)' == '2026'" PrivateAssets="All" />
         <PackageReference Include="Autodesk.Revit.SDK" Version="2025.*" Condition="'$(RevitVersion)' == '2025'" PrivateAssets="All" />
         <PackageReference Include="Autodesk.Revit.SDK" Version="2024.*" Condition="'$(RevitVersion)' == '2024'" PrivateAssets="All" />
         <PackageReference Include="Autodesk.Revit.SDK" Version="2023.*" Condition="'$(RevitVersion)' == '2023'" PrivateAssets="All" />
@@ -119,18 +127,41 @@
 
     <ItemGroup>
       <None Remove="Resources\RenamerIcon.png" />
-      <EmbeddedResource Include="Resources\RenamerIcon.png">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </EmbeddedResource>
       <None Remove="Resources\ElectricalCircuit.png" />
-      <EmbeddedResource Include="Resources\ElectricalCircuit.png">
+      <None Remove="Resources\GPSrvtTabDLLMover.exe" />
+      <None Remove="Resources\Receptacle32.png" />
+      <EmbeddedResource Include="Resources\Receptacle32.png">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </EmbeddedResource>
-      <None Remove="Resources\GPSrvtTabDLLMover.exe" />
+      <None Remove="Resources\Concat32.png" />
+      <None Remove="Resources\ConcatIcon.png" />
+      <None Remove="Resources\Download32.png" />
+      <EmbeddedResource Include="Resources\Download32.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Resources\SheetRev16.png" />
+      <EmbeddedResource Include="Resources\SheetRev16.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Resources\AwsRev16.png" />
+      <EmbeddedResource Include="Resources\AwsRev16.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+        <!--<ProjectReference Include="..\GPSrvtTab.Contracts\GPSrvtTab.Contracts.csproj" />-->
+        <ProjectReference Include="..\GPSrvtTabWrapper\GPSrvtTabWrapper.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="obj\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\Concat32.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
     </ItemGroup>
     
 

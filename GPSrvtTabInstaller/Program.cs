@@ -1,7 +1,7 @@
-﻿namespace GPSrvtTabInstaller;
+﻿using WixSharp;
+using File = WixSharp.File;
 
-using System;
-using WixSharp;
+namespace GPSrvtTabInstaller;
 
 class Program
 {

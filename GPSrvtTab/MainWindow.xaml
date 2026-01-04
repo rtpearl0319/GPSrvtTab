@@ -1,0 +1,64 @@
+﻿<Window x:Class="ParameterRemapperUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Get Parameters" Height="auto" MinWidth="300" Width="300" ResizeMode="CanResizeWithGrip" SizeToContent="Height">
+    
+    <Border Padding="5">
+        
+        <StackPanel>
+            
+            <Button Content="Select Elements" FontSize="10" Width="100" HorizontalAlignment="Left" Click="SelectElement" Cursor="Hand" />
+
+            <Label FontSize="10" FontFamily="Arial">
+                Select Parameters...
+            </Label>
+            
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="40" />
+                </Grid.RowDefinitions>
+                
+                <Menu Grid.Row="0" Grid.Column="0">
+                    <ComboBox Name="ParamListView1" />
+                </Menu>
+                
+                <Menu Grid.Row="1" Grid.Column="0">
+                    <ComboBox Name="ParamListView2" />
+                </Menu>
+                
+                <Menu Grid.Row="2" Grid.Column="0">
+                    <ComboBox Name="ParamListView3" />
+                </Menu>
+                
+                <Menu Grid.Row="3" Grid.Column="0">
+                    <ComboBox Name="ParamListView4" />
+                </Menu>
+                
+                <Menu Grid.Row="4" Grid.Column="0">
+                    <ComboBox Name="ParamListView5" />
+                </Menu>
+                
+            </Grid>
+            
+        </StackPanel>
+        
+    </Border>
+    
+</Window>
