@@ -27,30 +27,41 @@
         <EmbeddedResource Include="Resources\GPSRevitTabVersionR20.zst">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
+        
         <None Remove="Resources\GPSRevitTabVersionR21.zst" />
         <EmbeddedResource Include="Resources\GPSRevitTabVersionR21.zst">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
+        
         <None Remove="Resources\GPSRevitTabVersionR22.zst" />
         <EmbeddedResource Include="Resources\GPSRevitTabVersionR22.zst">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
+        
         <None Remove="Resources\GPSRevitTabVersionR23.zst" />
         <EmbeddedResource Include="Resources\GPSRevitTabVersionR23.zst">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
+        
         <None Remove="Resources\GPSRevitTabVersionR24.zst" />
         <EmbeddedResource Include="Resources\GPSRevitTabVersionR24.zst">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
+        
         <None Remove="Resources\GPSRevitTabVersionR25.zst" />
+        <EmbeddedResource Include="Resources\GPSRevitTabVersionR25.zst">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+        
         <None Remove="Resources\GPSRevitTabVersionR26.zst" />
         <EmbeddedResource Include="Resources\GPSRevitTabVersionR26.zst">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
+        
         <None Remove="Resources\GPSrvtTabDLLMover.exe" />
         <EmbeddedResource Include="Resources\GPSrvtTabDLLMover.exe">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
+        
     </ItemGroup>
 </Project>
