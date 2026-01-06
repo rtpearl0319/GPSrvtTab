@@ -7,10 +7,9 @@ namespace GPSrvtTabWrapper
     internal class App : IExternalApplication
     {
         private const string RevitAppClass = "GPSrvtTab.GpsTab";
-        private const string DefaultVersion = "R25";
+        private const string DefaultVersion = "R26";
         private const string DllName = "GPSRevitTabVersion";
 
-            
         public CheckUpdateHandler localHandler = new CheckUpdateHandler(); 
         
         private IExternalApplication? _dllInstance;
@@ -98,31 +97,15 @@ namespace GPSrvtTabWrapper
 
         public Result OnShutdown(UIControlledApplication application)
         {
+            _dllInstance?.OnShutdown(application);
+            
             // If no update is needed, just shutdown normally
             if (!localHandler.ShouldUpdateOnShutdown())
             {
                 return Result.Succeeded;
             }
             
-            var assembly = Assembly.GetExecutingAssembly();
-            var tempFolderPath = Path.GetTempPath();
-
-            string exePath = ExtractExe(tempFolderPath, "GPSrvtTabDLLMover.exe");
-
-            _dllInstance?.OnShutdown(application);
-
-            using var stream =
-                assembly.GetManifestResourceStream($"{typeof(App).Namespace}.Resources.GPSrvtTabDLLMover.exe");
-            if (stream == null)
-            {
-                TaskDialog.Show("Error", $"Resource GPSrvtTabDLLMover not found.");
-                throw new InvalidOperationException($"Resource GPSrvtTabDLLMover not found.");
-            }
-
-            using (var fileStream = new FileStream(exePath, FileMode.Create, FileAccess.Write))
-            {
-                stream.CopyTo(fileStream);
-            }
+            string exePath = ExtractExe(Path.GetTempPath(), "GPSrvtTabDLLMover.exe");
 
             var process = new Process
             {

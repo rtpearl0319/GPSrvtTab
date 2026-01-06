@@ -121,7 +121,7 @@ namespace GPSrvtTab
                     combined.Append("_");
                 }
             }
-            return combined.ToString().Replace("__", "").TrimStart('_').TrimEnd('_');
+            return combined.ToString().Replace("__", "_").TrimStart('_').TrimEnd('_');
             //Return the combined string
         }
     }
