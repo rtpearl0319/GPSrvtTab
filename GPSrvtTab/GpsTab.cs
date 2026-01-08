@@ -53,6 +53,15 @@ namespace GPSrvtTab
             
             //-------------------------------------------------------------------------------------------------------
             
+            PushButtonData sheetSchedule = new PushButtonData("cmdSheetSchedule",
+                "Print Set", thisAssemblyPath, "GPSrvtTab.SheetSchedule");
+            
+            PushButton sheetScheduleButton = sheetRibbonPanel.AddItem(sheetSchedule) as PushButton;
+            sheetScheduleButton.ToolTip = "Create print set from selected schedule on sheet";
+            sheetScheduleButton.LargeImage = LoadEmbeddedIcon(assembly, "GPSrvtTab.Resources.PrintSet32.png");
+            
+            sheetRibbonPanel.AddSeparator();
+            
             PushButtonData SheetRevision = new PushButtonData("cmdSheetRevision",
                 "Sheet Revision", thisAssemblyPath, "GPSrvtTab.SheetRevision");
             
