@@ -28,7 +28,6 @@ namespace GPSrvtTab
             ViewSchedule selectedSchedule = null;
             try
             {
-
                 uidoc.Selection.GetElementIds();
                 Reference pickedRef = uidoc.Selection.PickObject(ObjectType.Element, new ScheduleSelectionFilter(),
                     "Select a schedule on a sheet");
@@ -140,28 +139,16 @@ namespace GPSrvtTab
                 // Check for existing saved view sheet sets with the same name via reflection (robust to API version differences)
                 var vssObj = viewSheetSetting;
 
-                try
+                // Assign the views we collected
+                viewSheetSetting.CurrentViewSheetSet.Views = myViewSet;
+
+                // If the CurrentViewSheetSet exposes a Name property set it (some API versions use this when saving)
+                var currentSet = viewSheetSetting.CurrentViewSheetSet;
+                var nameProp = currentSet.GetType()
+                    .GetProperty("Name", BindingFlags.Public | BindingFlags.Instance);
+                if (nameProp != null && nameProp.CanWrite)
                 {
-                    // Assign the views we collected
-                    viewSheetSetting.CurrentViewSheetSet.Views = myViewSet;
-                
-                    // If the CurrentViewSheetSet exposes a Name property set it (some API versions use this when saving)
-                    var currentSet = viewSheetSetting.CurrentViewSheetSet;
-                    var nameProp = currentSet.GetType()
-                        .GetProperty("Name", BindingFlags.Public | BindingFlags.Instance);
-                    if (nameProp != null && nameProp.CanWrite)
-                    {
-                        try
-                        {
-                            nameProp.SetValue(currentSet, selectedSchedule.Name);
-                        }
-                        catch
-                        {
-                        }
-                    }
-                }
-                catch
-                {
+                    nameProp.SetValue(currentSet, selectedSchedule.Name);
                 }
 
                 try
@@ -170,11 +157,9 @@ namespace GPSrvtTab
                     viewSheetSetting.SaveAs(selectedSchedule.Name);
 
                     TaskDialog.Show("Success", "Print set saved.");
-                    
                 }
                 catch (Exception)
                 {
-
                     TaskDialog tdPrompt = new TaskDialog("Save Print Set Failed")
                     {
                         MainInstruction = "Saving the print set failed.",
@@ -192,7 +177,6 @@ namespace GPSrvtTab
                     vssObj.Delete();
 
                     TaskDialog.Show("Removed", "Previous view sheet set deleted.");
-
                 }
 
                 t.Commit();
@@ -215,4 +199,3 @@ namespace GPSrvtTab
         }
     }
 }
-
