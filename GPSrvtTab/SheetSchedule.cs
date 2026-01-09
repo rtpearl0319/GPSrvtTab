@@ -17,7 +17,23 @@ namespace GPSrvtTab
             UIApplication uiapp = commandData.Application;
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Document doc = uidoc.Document;
-
+    
+            // Get the element selection of the current document
+            ICollection<ElementId> selectedIds = uiDoc.Selection.GetElementIds();
+            List<ViewSchedule> selectedSchedules = new List<ViewSchedule>();
+            if (selectionIds.Count>0  
+            {
+                 foreach (ElementId id in selectionIds)
+                 {
+                     Element element = doc.GetElement(id);
+                     ViewSchedule schedule = element as ViewSchedule;
+                     if (schedule != null)
+                     {
+                          selectedSchedules.Add(schedule);
+                     }
+                 }
+            }
+            //impliment some logic here to sllow for 2 seleciton modes if no selection in PB was made logic thru new selection filter in active view
             if (doc.ActiveView.Category.Name != "Sheets")
             {
                 TaskDialog.Show("Error", "Please run this command from a sheet view.");
