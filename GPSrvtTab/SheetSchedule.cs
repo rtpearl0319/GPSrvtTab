@@ -24,10 +24,30 @@ namespace GPSrvtTab
                 return Result.Failed;
             }
 
+            // TaskDialog.Show("Sheet Set", "Select the sheet list on the active sheet.");
+            
+            /*ICollection<ElementId> selectionId = uidoc.Selection.GetElementIds();
+            List<ViewSchedule> currentSelectedSchedule = new List<ViewSchedule>();
+            if (selectionId.Count > 0)
+            {
+                foreach (ElementId id in selectionId)
+                {
+                    Element elem = doc.GetElement(id);
+                    ViewSchedule schedule = elem as ViewSchedule;
+                    if (schedule != null)
+                    {
+                        currentSelectedSchedule.Add(schedule);
+                    }
+                }
+            }
+
+            TaskDialog.Show("test", currentSelectedSchedule[0].Name);*/
+
             // Require the user to pick a schedule element in the model (placed schedule on a sheet)
             ViewSchedule selectedSchedule = null;
             try
             {
+
                 uidoc.Selection.GetElementIds();
                 Reference pickedRef = uidoc.Selection.PickObject(ObjectType.Element, new ScheduleSelectionFilter(),
                     "Select a schedule on a sheet");
@@ -49,6 +69,7 @@ namespace GPSrvtTab
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
+                TaskDialog.Show("error", "Operation cancelled.");
                 return Result.Cancelled;
             }
 
@@ -139,16 +160,25 @@ namespace GPSrvtTab
                 // Check for existing saved view sheet sets with the same name via reflection (robust to API version differences)
                 var vssObj = viewSheetSetting;
 
+                
                 // Assign the views we collected
                 viewSheetSetting.CurrentViewSheetSet.Views = myViewSet;
-
+                
                 // If the CurrentViewSheetSet exposes a Name property set it (some API versions use this when saving)
                 var currentSet = viewSheetSetting.CurrentViewSheetSet;
                 var nameProp = currentSet.GetType()
                     .GetProperty("Name", BindingFlags.Public | BindingFlags.Instance);
                 if (nameProp != null && nameProp.CanWrite)
                 {
-                    nameProp.SetValue(currentSet, selectedSchedule.Name);
+                    try
+                    {
+                        nameProp.SetValue(currentSet, selectedSchedule.Name);
+                    }
+                    catch
+                    {
+                        //TaskDialog.Show("error", "Could not set name on current view sheet set.");
+                        // silently continue
+                    }
                 }
 
                 try
@@ -157,12 +187,14 @@ namespace GPSrvtTab
                     viewSheetSetting.SaveAs(selectedSchedule.Name);
 
                     TaskDialog.Show("Success", "Print set saved.");
+                    
                 }
                 catch (Exception)
                 {
+
                     TaskDialog tdPrompt = new TaskDialog("Save Print Set Failed")
                     {
-                        MainInstruction = "Saving the print set failed.",
+                        MainInstruction = "There is already a print set with this name.",
                         MainContent = "\nDo you want to delete the existing print set?",
                         CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No
                     };
@@ -176,7 +208,8 @@ namespace GPSrvtTab
 
                     vssObj.Delete();
 
-                    TaskDialog.Show("Removed", "Previous view sheet set deleted.");
+                    TaskDialog.Show("Removed", "Previous print set deleted.");
+
                 }
 
                 t.Commit();
