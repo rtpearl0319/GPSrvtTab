@@ -1,10 +1,13 @@
-﻿using Autodesk.Revit.ApplicationServices;
+﻿using Autodesk.Internal.Windows;
+using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Electrical;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using GPSrvtTab.Extensions.SelectionExtensions;
+using InvalidOperationException = Autodesk.Revit.Exceptions.InvalidOperationException;
+using OperationCanceledException = Autodesk.Revit.Exceptions.OperationCanceledException;
 
 namespace GPSrvtTab
 {
@@ -17,48 +20,64 @@ namespace GPSrvtTab
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Application app = uiapp.Application;
             Document doc = uidoc.Document;
-            
-            //Pick Elements You Want Circuited
-            IList<Reference> secElements = uidoc.Selection.PickObjects(ObjectType.Element, new FixtureSelectionFilter(), 
-                "Select Elements You Want Circuited");
-            List<ElementId> ids = (from Reference r in secElements select r.ElementId).ToList();
 
-            //Pick the Panel to Circuit to
-            Reference panel = uidoc.Selection.PickObject(ObjectType.Element, new EquipmentSelectionFilter(), "Select Panel You Want To Circuit To");
-            Element element = doc.GetElement(panel);
+            Reference panel;
+            IList<Reference> selectedElements;
+            Element element;
+            try
+            {
+                //Pick Elements You Want Circuited
+                selectedElements = uidoc.Selection.PickObjects(ObjectType.Element,
+                    new FixtureSelectionFilter(),
+                    "Select Elements You Want Circuited");
+                List<ElementId> ids = (from Reference r in selectedElements select r.ElementId).ToList();
+
+                if (selectedElements == null || selectedElements.Count == 0)
+                {
+                    return Result.Cancelled;
+                }
+
+                //Pick the Panel to Circuit to
+                panel = uidoc.Selection.PickObject(ObjectType.Element, new EquipmentSelectionFilter(),
+                    "Select Panel You Want To Circuit To");
+                element = doc.GetElement(panel.ElementId);
+            }
+            catch(OperationCanceledException)
+            {
+                return Result.Cancelled;
+            }
             
             using (Transaction t = new Transaction(doc, "Transaction"))
             {
                 t.Start();
                 
-                //List<string> panelVerification = new List<string>();
-                
                 List<string> elecIdsUnCircuit = new List<string>();
                 
                 string panelConnectorType = "";
                 
-                foreach (Reference r in secElements)
+                foreach (Reference r in selectedElements)
                 {
                     if (!(doc.GetElement(r) is FamilyInstance))
                     {
                         continue;
                     }
                     
-                    FamilyInstance? fixtureInstance = doc.GetElement(r) as FamilyInstance;
+                    
+                    FamilyInstance? fixtureInstance = doc.GetElement(r.ElementId) as FamilyInstance;
                     
                     var elecsystem = new List<ElectricalSystem>();
                     
-                    #if REVIT2020 || REVIT2021 
+#if REVIT2020 || REVIT2021 
                         foreach (ElectricalSystem elecSys in fixtureInstance.MEPModel.ElectricalSystems)
                         {
-                    #else
-                     foreach (ElectricalSystem elecSys in fixtureInstance?.MEPModel.GetElectricalSystems()!)
-                     {
-                    #endif 
+#else
+                    foreach (ElectricalSystem elecSys in fixtureInstance?.MEPModel.GetElectricalSystems()!)
+                    {
+#endif 
                         elecsystem.Add(elecSys);
                     }
                     
-                     foreach (var elementElec in elecsystem)
+                    foreach (var elementElec in elecsystem)
                     {
                         if (elementElec.PanelName != "")
                         {
@@ -70,46 +89,31 @@ namespace GPSrvtTab
                     var fixtureConnector = ElementGetConnector(fixtureInstance);
                     
                     FamilyInstance? panelFi = element as FamilyInstance;
-                     
-#if REVIT2023 || REVIT2023 || REVIT2024 || REVIT2025
-                     
-                    var panelConnector = ElementGetConnector(panelFi);
-                    
-                    /*if (panelConnector.ElectricalSystemType.ToString() != fixtureConnector.ElectricalSystemType.ToString())
-                    {
-                        panelConnectorType = panelConnector.ElectricalSystemType.ToString();
-                        panelVerification.Add(" Fixture Connector: " + fixtureConnector.ElectricalSystemType + " - " + fixtureInstance.Id);
-                    }*/
-#endif
                     
                     ConnectorSet connectorSet = fixtureInstance.MEPModel.ConnectorManager.Connectors;
                     
                     foreach (Connector connector in connectorSet)
                     {
-                        if (elecsystem.Count == 0)
+                        
+                        if (elecsystem.Count == 0 && connector.Domain == Domain.DomainElectrical)
                         {
-                            if (fixtureConnector != null)
+                            ElectricalSystem newElectricalSystem = ElectricalSystem.Create(connector, 
+                                connector.ElectricalSystemType);
+
+                            try
                             {
-                                ElectricalSystem newElectricalSystem = ElectricalSystem.Create(connector, 
-                                    fixtureConnector.ElectricalSystemType);
-                                
                                 newElectricalSystem.SelectPanel(panelFi);
                             }
+                            catch(InvalidOperationException)
+                            {
+                                TaskDialog.Show("Error", $"{fixtureInstance.Symbol.Family.Name} cannot be connected to {panelFi.Symbol.Family.Name}");
+                                return Result.Failed;
+                            }                                                                    
                         }
+                        
                     }
                 }
-                /*if (panelVerification.Count > 0)
-                {
-                    #if Revit2020 || Revit2021
-
-                    TaskDialog.Show("Error", "Panel Does Not Have A Connector For Verification.\n " +
-                    "Please Check The Panel To Verify Circuit Was Created");
-                    #endif
-                    
-                    TaskDialog.Show("Could Not Verify Connector \n",  "Panel Connector: " + panelConnectorType + "\n"
-                                                             + string.Join("\n", panelVerification));
-                }*/
-
+                
                 if (elecIdsUnCircuit.Count > 0) 
                     TaskDialog.Show("Circuited Elements", "Elements Are Already Circuited\n"+ string.Join
                         (", ", elecIdsUnCircuit));
