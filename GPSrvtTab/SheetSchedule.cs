@@ -17,26 +17,13 @@ namespace GPSrvtTab
             using Transaction t = new Transaction(doc, "Print Set from Schedule");
             t.Start();
 
+            ElementId matchingPrintSet = null;
+
             if (doc.ActiveView.Category.Name != "Sheets")
             {
                 TaskDialog.Show("Error", "Please run this command from a sheet view.");
                 return Result.Failed;
             }
-
-            /*ICollection<ElementId> selectionId = uidoc.Selection.GetElementIds();
-            List<ViewSchedule> currentSelectedSchedule = new List<ViewSchedule>();
-            if (selectionId.Count > 0)
-            {
-                foreach (ElementId id in selectionId)
-                {
-                    Element elem = doc.GetElement(id);
-                    ViewSchedule schedule = elem as ViewSchedule;
-                    if (schedule != null)
-                    {
-                        currentSelectedSchedule.Add(schedule);
-                    }
-                }
-            }*/
 
             ViewSchedule selectedSchedule;
             try
@@ -53,6 +40,15 @@ namespace GPSrvtTab
             {
                 TaskDialog.Show("Info", "No schedule selected. Please select a schedule element placed on a sheet.");
                 return Result.Failed;
+            }
+            
+            FilteredElementCollector projectPrintSets = new FilteredElementCollector(doc).OfClass(typeof(ViewSheetSet));
+            foreach (var printSet in projectPrintSets)
+            {
+                if (printSet.Name == selectedSchedule.Name)
+                {
+                    matchingPrintSet = printSet.Id;
+                }
             }
 
             ScheduleDefinition definition = selectedSchedule.Definition;
@@ -72,50 +68,9 @@ namespace GPSrvtTab
                 return Result.Failed;
             }
 
-            if (!PrintSetSave(doc, sheetsInSchedule, selectedSchedule))
+            if (!PrintSetSave(doc, sheetsInSchedule, selectedSchedule, matchingPrintSet))
             {
-                TaskDialog.Show("error", "Failed to save print set");
             }
-
-            /*ViewSet myViewSet = new ViewSet();
-            foreach (ViewSheet view in sheetsInSchedule)
-            {
-                myViewSet.Insert(view);
-            }
-
-            PrintManager printManager = doc.PrintManager;
-            printManager.CombinedFile = true;
-            printManager.PrintRange = PrintRange.Select;
-
-            ViewSheetSetting viewSheetSetting = printManager.ViewSheetSetting;
-                
-            var vssObj = viewSheetSetting; // Check for existing saved view sheet sets with the same name via reflection (robust to API version differences)
-            viewSheetSetting.CurrentViewSheetSet.Views = myViewSet; // Assign the views we collected
-                
-            try
-            {
-                // Finally save the current view sheet set under the schedule name
-                viewSheetSetting.SaveAs(selectedSchedule.Name);
-                TaskDialog.Show("Success", "Print set saved.");  
-            }
-            catch (Exception)
-            {
-
-                TaskDialog tdPrompt = new TaskDialog("Save Print Set Failed")
-                {
-                    MainInstruction = "There is already a print set with this name.",
-                    MainContent = "\nDo you want to delete the existing print set?",
-                    CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No
-                };
-
-                if (tdPrompt.Show() == TaskDialogResult.No)
-                {
-                    return Result.Cancelled;
-                }
-
-                vssObj.Delete();
-                TaskDialog.Show("Removed", "Previous print set deleted.");
-            }*/
 
             t.Commit();
             return Result.Succeeded;
@@ -185,7 +140,7 @@ namespace GPSrvtTab
             return sheetsInSchedule;
         }
 
-        public bool PrintSetSave(Document doc, List<ViewSheet> sheetsInSchedule, ViewSchedule selectedSchedule)
+        public bool PrintSetSave(Document doc, List<ViewSheet> sheetsInSchedule, ViewSchedule selectedSchedule, ElementId printSetId)
         {
             
             ViewSet myViewSet = new ViewSet();
@@ -209,23 +164,27 @@ namespace GPSrvtTab
             }
             catch (Exception)
             {
-                
                 TaskDialog tdPrompt = new TaskDialog("Save Print Set Failed")
                 {
                     MainInstruction = "There is already a print set with this name.",
                     MainContent = "\nDo you want to delete the existing print set?",
                     CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No
                 };
+                
+                TaskDialogResult tdResult = tdPrompt.Show();
 
-                if (tdPrompt.Show() == TaskDialogResult.No)
+                if (tdResult == TaskDialogResult.No ||tdResult == TaskDialogResult.Cancel)
                 {
                     return false;
                 }
 
-                viewSheetSetting.Delete();
-                TaskDialog.Show("Removed", "Previous print set deleted.");
+                if (tdResult == TaskDialogResult.Yes)
+                {
+                    doc.Delete(printSetId);
+                    TaskDialog.Show("Removed", "Previous print set deleted.");
+                }
 
-                try
+                /*try
                 {
                     // Finally save the current view sheet set under the schedule name
                     viewSheetSetting.SaveAs(selectedSchedule.Name);
@@ -233,8 +192,10 @@ namespace GPSrvtTab
                 }
                 catch (Exception)
                 {
+                    TaskDialog.Show("Error", "Cannot Save File");
                     return false;
-                }
+                }*/
+
             }
             return true;
         }
@@ -252,5 +213,4 @@ namespace GPSrvtTab
             return false;
         }
     }
-    
 }
