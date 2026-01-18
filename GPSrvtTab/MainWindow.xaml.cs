@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Electrical;
 using Autodesk.Revit.UI;
@@ -34,7 +35,7 @@ namespace ParameterRemapperUI
                     }
                 }
                 
-                if (Grid.GetColumn(optionGridChild) == 3)
+                if (Grid.GetColumn(optionGridChild) == 2)
                 {
                     var currentSeparator = optionGridChild as TextBox;
                     if (currentSeparator != null)
@@ -84,6 +85,7 @@ namespace ParameterRemapperUI
                     }
                 }
             }
+            parameterNamesShared.Add("");
             return parameterNamesShared;
         }
         
@@ -119,11 +121,8 @@ namespace ParameterRemapperUI
 
         private string ConcatWpfElements()
         {
-            
-            // OptionGrid.RowDefinitions.Count - 2 Removing Padding from beginning and end
-            // divide by 2 removes separators between elements
-            // - 1 subtracts 1 element
-            var paramInfos = new ParamInfo[((OptionGrid.RowDefinitions.Count - 2) / 2) - 1];
+            // subtract 2 rows for border padding
+            var paramInfos = new ParamInfo[OptionGrid.RowDefinitions.Count - 2];
             for (var i = 0; i < paramInfos.Length; i++)
             {
                 paramInfos[i] = new ParamInfo(); // Set default value in array
@@ -138,7 +137,7 @@ namespace ParameterRemapperUI
                         paramInfos[Grid.GetRow(optionGridChild)].name =  currentComboBox.Text;
                     }
                 }
-                else if (Grid.GetColumn(optionGridChild) == 3)
+                else if (Grid.GetColumn(optionGridChild) == 2)
                 {
                     if (optionGridChild is TextBox currentSeparator)
                     {
@@ -150,16 +149,13 @@ namespace ParameterRemapperUI
             StringBuilder result = new StringBuilder();
             foreach (var paramInfo in paramInfos)
             {
-                
                 if (string.IsNullOrEmpty(paramInfo.name))
                 {
                     continue;
                 }
-                
                 result.Append('[').Append(paramInfo.name).Append(']');
                 result.Append(paramInfo.separator);
             }
-            
             return result.ToString();
         }
 
@@ -167,7 +163,16 @@ namespace ParameterRemapperUI
         {
             Concatination.Text = ConcatWpfElements();
         }
-        
+
+        private void OnLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            Concatination.Text = ConcatWpfElements();
+        }
+
+        private void SubmitButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            TaskDialog.Show("Submitted", "Circuits have been renamed");
+        }
     }
 
     // Builder pattern

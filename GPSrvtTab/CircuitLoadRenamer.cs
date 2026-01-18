@@ -28,7 +28,7 @@ namespace GPSrvtTab
                 BuiltInCategory.OST_DataDevices
             );
             //Create a new transaction
-            using (var t = new Transaction(doc, "Change Parameter Value"))
+            using (var t = new Transaction(doc, "Change Circuit Name Value"))
             {
                 //Start the transaction
                 t.Start();
