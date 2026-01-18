@@ -4,61 +4,61 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Get Parameters" Height="auto" MinWidth="300" Width="300" ResizeMode="CanResizeWithGrip" SizeToContent="Height">
-    
-    <Border Padding="5">
+        FontFamily="Arial"
+        FontSize="16"
+        Title="Circuit Renamer" MinHeight="500" MaxHeight="500" MinWidth="300" ResizeMode="CanResizeWithGrip">
         
-        <StackPanel>
-            
-            <Button Content="Select Elements" FontSize="10" Width="100" HorizontalAlignment="Left" Click="SelectElement" Cursor="Hand" />
-
-            <Label FontSize="10" FontFamily="Arial">
-                Select Parameters...
-            </Label>
-            
-            <Grid>
+        <Grid Name="OptionGrid">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="20"/> <!--0 Left Border-->
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="20"/> <!--2 Middle Spacer-->
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="20"/> <!--4 Right Border-->
                 </Grid.ColumnDefinitions>
                 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="40" />
-                    <RowDefinition Height="40" />
-                    <RowDefinition Height="40" />
-                    <RowDefinition Height="40" />
-                    <RowDefinition Height="40" />
-                    <RowDefinition Height="40" />
+                        <RowDefinition Height="20"/> <!--0 Top Border-->
+                        <RowDefinition Height="Auto"/> 
+                        <RowDefinition Height="20"/> <!--2-->
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="20"/> <!--4-->
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="20"/> <!--6-->
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="20"/> <!--8-->
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="20"/> <!--10-->
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="20"/> <!--12-->
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="20"/> <!--14-->
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="20"/> <!--16-->
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="20"/> <!--18 Bottom Border-->
                 </Grid.RowDefinitions>
                 
-                <Menu Grid.Row="0" Grid.Column="0">
-                    <ComboBox Name="ParamListView1" />
-                </Menu>
+                <TextBlock Grid.Column="1" Grid.Row="1" Text="Select Parameters:"/>
+                <ComboBox Name="ParameterDropDown1" Grid.Column="1" Grid.Row="3" DropDownClosed="OnDropDownClosedOnSelectionChanged"/>
+                <ComboBox Name="ParameterDropDown2" Grid.Column="1" Grid.Row="5" DropDownClosed="OnDropDownClosedOnSelectionChanged"/>
+                <ComboBox Name="ParameterDropDown3" Grid.Column="1" Grid.Row="7" DropDownClosed="OnDropDownClosedOnSelectionChanged"/>
+                <ComboBox Name="ParameterDropDown4" Grid.Column="1" Grid.Row="9" DropDownClosed="OnDropDownClosedOnSelectionChanged"/>
+                <ComboBox Name="ParameterDropDown5" Grid.Column="1" Grid.Row="11" DropDownClosed="OnDropDownClosedOnSelectionChanged"/>
+                <ComboBox Name="ParameterDropDown6" Grid.Column="1" Grid.Row="13" DropDownClosed="OnDropDownClosedOnSelectionChanged"/>
+                <ComboBox Name="ParameterDropDown7" Grid.Column="1" Grid.Row="15" DropDownClosed="OnDropDownClosedOnSelectionChanged"/>
                 
-                <Menu Grid.Row="1" Grid.Column="0">
-                    <ComboBox Name="ParamListView2" />
-                </Menu>
                 
-                <Menu Grid.Row="2" Grid.Column="0">
-                    <ComboBox Name="ParamListView3" />
-                </Menu>
+                <!-- TODO: Add EventHandler For When Text is input to Separators -->
+                <TextBlock Grid.Column="3" Grid.Row="1" Text="Separator"/>
+                <TextBox Name="SeparatorTextBox1" Grid.Column="3" Grid.Row="3"/>
+                <TextBox Name="SeparatorTextBox2" Grid.Column="3" Grid.Row="5"/>
+                <TextBox Name="SeparatorTextBox3" Grid.Column="3" Grid.Row="7"/>
+                <TextBox Name="SeparatorTextBox4" Grid.Column="3" Grid.Row="9"/>
+                <TextBox Name="SeparatorTextBox5" Grid.Column="3" Grid.Row="11"/>
+                <TextBox Name="SeparatorTextBox6" Grid.Column="3" Grid.Row="13"/>
+                <TextBox Name="SeparatorTextBox7" Grid.Column="3" Grid.Row="15"/>
                 
-                <Menu Grid.Row="3" Grid.Column="0">
-                    <ComboBox Name="ParamListView4" />
-                </Menu>
-                
-                <Menu Grid.Row="4" Grid.Column="0">
-                    <ComboBox Name="ParamListView5" />
-                </Menu>
-                
-            </Grid>
-            
-        </StackPanel>
-        
-    </Border>
-    
+                <TextBlock Name="Concatination" Grid.Column="1" Grid.Row="17" FontSize="12"/>
+        </Grid>
 </Window>

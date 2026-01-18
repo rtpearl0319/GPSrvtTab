@@ -184,18 +184,17 @@ namespace GPSrvtTab
                     TaskDialog.Show("Removed", "Previous print set deleted.");
                 }
 
-                /*try
-                {
-                    // Finally save the current view sheet set under the schedule name
-                    viewSheetSetting.SaveAs(selectedSchedule.Name);
-                    TaskDialog.Show("Success", "Print set saved.");
-                }
-                catch (Exception)
-                {
-                    TaskDialog.Show("Error", "Cannot Save File");
-                    return false;
-                }*/
-
+                // try
+                // {
+                //     // Finally save the current view sheet set under the schedule name
+                //     viewSheetSetting.SaveAs(selectedSchedule.Name);
+                //     TaskDialog.Show("Success", "Print set saved.");
+                // }
+                // catch (Exception)
+                // {
+                //     TaskDialog.Show("Error", "Cannot Save File");
+                //     return false;
+                // }
             }
             return true;
         }
