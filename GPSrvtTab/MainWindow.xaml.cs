@@ -177,7 +177,6 @@ namespace ParameterRemapperUI
                     BuiltInCategory.OST_DataDevices
                 );
 
-
                 var paramUpdates = new List<ParamInfoUpdate>();
 
                 //Loop through the elements in the collection
@@ -223,9 +222,6 @@ namespace ParameterRemapperUI
                     continue;
                 }
 
-                result.Append(previousSeparator);
-                previousSeparator = string.Empty;
-
                 var newValue = string.Empty;
 
                 if (familyInstance != null)
@@ -249,10 +245,11 @@ namespace ParameterRemapperUI
                         newValue = $"[{paramInfo.name}]";
                     }
                 }
-                result.Append(newValue);
-                
-                if (!string.IsNullOrEmpty(newValue))
+
+                if (!string.IsNullOrWhiteSpace(newValue))
                 {
+                    result.Append(previousSeparator);
+                    result.Append(newValue);
                     previousSeparator = paramInfo.separator;
                 }
             }
