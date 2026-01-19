@@ -14,10 +14,17 @@ namespace ParameterRemapperUI
     public partial class MainWindow : Window
     {
         public UIDocument uiDoc;
-        
+
+        private ParameterRemapperEventHandler parameterEventHandler;
+        private ExternalEvent parameterExternalEvent;
+
         public MainWindow(UIDocument uiDoc)
         {
             this.uiDoc = uiDoc;
+
+            this.parameterEventHandler = new ParameterRemapperEventHandler(uiDoc.Document);
+            this.parameterExternalEvent = ExternalEvent.Create(parameterEventHandler);
+
             InitializeComponent();
             this.Topmost = true;
 
@@ -34,7 +41,7 @@ namespace ParameterRemapperUI
                         comboBoxes.Add(currentComboBox);
                     }
                 }
-                
+
                 if (Grid.GetColumn(optionGridChild) == 2)
                 {
                     var currentSeparator = optionGridChild as TextBox;
@@ -44,8 +51,9 @@ namespace ParameterRemapperUI
                     }
                 }
             }
-            
-            var parameters = GetSharedElementParameters(GetElements(this.uiDoc.Document, BuiltInCategory.OST_ElectricalFixtures,
+
+            var parameters = GetSharedElementParameters(GetElements(this.uiDoc.Document,
+                BuiltInCategory.OST_ElectricalFixtures,
                 BuiltInCategory.OST_SecurityDevices,
                 BuiltInCategory.OST_DataDevices));
 
@@ -57,7 +65,7 @@ namespace ParameterRemapperUI
                 }
             }
         }
-        
+
         private IList<Element> GetElements(Document doc, params BuiltInCategory[] categories)
         {
             var elements = new List<Element>();
@@ -72,7 +80,7 @@ namespace ParameterRemapperUI
 
         private ISet<string> GetSharedElementParameters(IList<Element> elements)
         {
-            var parameterNamesFound = new  HashSet<string>();
+            var parameterNamesFound = new HashSet<string>();
             var parameterNamesShared = new SortedSet<string>();
 
             foreach (Element elem in elements)
@@ -88,11 +96,11 @@ namespace ParameterRemapperUI
             parameterNamesShared.Add("");
             return parameterNamesShared;
         }
-        
+
         private List<ElectricalSystem> GetElectricalSystems(IList<Element> elements)
         {
             var electricalSystems = new List<ElectricalSystem>();
-            
+
             foreach (Element element in elements)
             {
                 if (!(element is FamilyInstance familyInstance))
@@ -100,41 +108,41 @@ namespace ParameterRemapperUI
                     continue;
                 }
 
-#if REVIT2020 || REVIT2021 
+#if REVIT2020 || REVIT2021
                      foreach (ElectricalSystem electricalSystem in familyInstance.MEPModel.ElectricalSystems)
                      {
 #else
                 foreach (ElectricalSystem electricalSystem in familyInstance.MEPModel.GetElectricalSystems())
                 {
-#endif  
+#endif
                     if (electricalSystem.Elements.Size != 1)
                     {
-                        TaskDialog.Show("Error", "Circuit system must have exactly one element" + '\n' + "Element ID: " + familyInstance.Id);
+                        TaskDialog.Show("Error",
+                            "Circuit system must have exactly one element" + '\n' + "Element ID: " + familyInstance.Id);
                         continue;
                     }
+
                     electricalSystems.Add(electricalSystem);
                 }
             }
             return electricalSystems;
         }
-        
 
-        private string ConcatWpfElements()
+        public ParamInfo[] WpfParameterInfos()
         {
-            // subtract 2 rows for border padding
             var paramInfos = new ParamInfo[OptionGrid.RowDefinitions.Count - 2];
             for (var i = 0; i < paramInfos.Length; i++)
             {
                 paramInfos[i] = new ParamInfo(); // Set default value in array
             }
-            
+
             foreach (UIElement optionGridChild in OptionGrid.Children)
             {
                 if (Grid.GetColumn(optionGridChild) == 1)
                 {
                     if (optionGridChild is ComboBox currentComboBox)
                     {
-                        paramInfos[Grid.GetRow(optionGridChild)].name =  currentComboBox.Text;
+                        paramInfos[Grid.GetRow(optionGridChild)].name = currentComboBox.Text;
                     }
                 }
                 else if (Grid.GetColumn(optionGridChild) == 2)
@@ -145,39 +153,140 @@ namespace ParameterRemapperUI
                     }
                 }
             }
+            return paramInfos;
+        }
 
+        private void OnDropDownClosedOnSelectionChanged(object sender, EventArgs e)
+        {
+            Concatination.Text = JoinParamInfos(WpfParameterInfos(), null);
+        }
+
+        private void OnLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            Concatination.Text = JoinParamInfos(WpfParameterInfos(), null);
+        }
+
+        private void SubmitButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var allElements = GetElements(
+                    uiDoc.Document,
+                    BuiltInCategory.OST_ElectricalFixtures,
+                    BuiltInCategory.OST_SecurityDevices,
+                    BuiltInCategory.OST_DataDevices
+                );
+
+
+                var paramUpdates = new List<ParamInfoUpdate>();
+
+                //Loop through the elements in the collection
+                foreach (var electricalSystem in GetElectricalSystems(allElements))
+                {
+                    if (electricalSystem == null)
+                    {
+                        continue;
+                    }
+
+                    if (electricalSystem.Elements.Size != 1)
+                    {
+                        TaskDialog.Show("Error", "Electrical system must have exactly one element");
+                        return;
+                    }
+
+                    var elementIterator = electricalSystem.Elements.ForwardIterator();
+                    elementIterator.MoveNext();
+                    var familyInstance = elementIterator.Current as FamilyInstance;
+
+                    paramUpdates.Add(new ParamInfoUpdate(electricalSystem,
+                        JoinParamInfos(WpfParameterInfos(), familyInstance)));
+                }
+
+                parameterEventHandler.SetParamInfoUpdates(paramUpdates);
+                parameterExternalEvent.Raise();
+            }
+            catch(Exception)
+            {
+                TaskDialog.Show("Error", "Failed to edit circuit names");
+            }
+        }
+
+        public string JoinParamInfos(ParamInfo[] paramInfos, FamilyInstance familyInstance)
+        {
             StringBuilder result = new StringBuilder();
+            string previousSeparator = string.Empty;
+
             foreach (var paramInfo in paramInfos)
             {
                 if (string.IsNullOrEmpty(paramInfo.name))
                 {
                     continue;
                 }
-                result.Append('[').Append(paramInfo.name).Append(']');
-                result.Append(paramInfo.separator);
+
+                result.Append(previousSeparator);
+                previousSeparator = string.Empty;
+
+                var newValue = string.Empty;
+
+                if (familyInstance != null)
+                {
+                    var parameter = familyInstance.LookupParameter(paramInfo.name);
+
+                    if (parameter == null)
+                    {
+                        parameter = familyInstance.Symbol.LookupParameter(paramInfo.name);
+                    }
+
+                    if (parameter != null)
+                    {
+                        newValue = parameter.AsValueString();
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(paramInfo.name))
+                    {
+                        newValue = $"[{paramInfo.name}]";
+                    }
+                }
+                result.Append(newValue);
+                
+                if (!string.IsNullOrEmpty(newValue))
+                {
+                    previousSeparator = paramInfo.separator;
+                }
             }
             return result.ToString();
         }
 
-        private void OnDropDownClosedOnSelectionChanged(object sender, EventArgs e)
+        // Builder pattern
+        public class ParamInfo
         {
-            Concatination.Text = ConcatWpfElements();
+            public string name, separator;
         }
 
-        private void OnLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        public class ParamInfoUpdate
         {
-            Concatination.Text = ConcatWpfElements();
-        }
+            private ElectricalSystem electricalSystem;
+            private string newValue;
 
-        private void SubmitButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            TaskDialog.Show("Submitted", "Circuits have been renamed");
-        }
-    }
+            public ParamInfoUpdate(ElectricalSystem electricalSystem, string newValue)
+            {
+                this.electricalSystem = electricalSystem;
+                this.newValue = newValue;
+            }
 
-    // Builder pattern
-    public class ParamInfo
-    {
-        public string name, separator;
+            public ElectricalSystem GetElectricalSystem()
+            {
+                return electricalSystem;
+            }
+
+            public string GetNewValue()
+            {
+                return newValue;
+            }
+        }
     }
 }
+
+    

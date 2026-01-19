@@ -44,8 +44,8 @@ namespace GPSrvtTab
             elecCircuitButton.ToolTip = "Select Elements then Select Panel To Circuit To";
             elecCircuitButton.LargeImage = LoadEmbeddedIcon(assembly, "GPSrvtTab.Resources.Receptacle32.png");
             
-            PushButtonData circuitRenamer = new PushButtonData("cmdCircuitLoadRenamer",
-                "Rename Circuits", thisAssemblyPath, "GPSrvtTab.CircuitLoadRenamer");
+            PushButtonData circuitRenamer = new PushButtonData("cmdParameterRemapper",
+                "Rename Circuits", thisAssemblyPath, "ParameterRemapperUI.ParameterRemapper");
             
             PushButton circuitRenamerButton = elecRibbonPanel.AddItem(circuitRenamer) as PushButton;
             circuitRenamerButton.ToolTip = "Rename All Circuits Based On Parameter Values";
@@ -115,6 +115,5 @@ namespace GPSrvtTab
         {
             return wrapperCheckUpdateHandler;
         }
-        
     }
 }

@@ -92,7 +92,7 @@ namespace GPSrvtTab
             var elementIterator = electricalSystem.Elements.ForwardIterator();
             elementIterator.MoveNext();
             var familyInstance = elementIterator.Current as FamilyInstance;
-            
+
             //Parameters to add for load name
             //familyInstance.LookupParameter for Instance Parameters
             //familyInstance.Symbol.LookupParameter for Type Parameters
@@ -109,7 +109,7 @@ namespace GPSrvtTab
             //Set the LoadName property of the electrical system
             electricalSystem.LoadName = parameterValue;
         }
-        //**********Build the parameter string**********
+        //Build the parameter string
         private string BuildParameterString(params Parameter[] parameters) {
             //Create a new StringBuilder
             var combined = new StringBuilder();
