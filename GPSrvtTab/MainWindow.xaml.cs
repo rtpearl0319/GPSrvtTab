@@ -155,17 +155,7 @@ namespace ParameterRemapperUI
             }
             return paramInfos;
         }
-
-        private void OnDropDownClosedOnSelectionChanged(object sender, EventArgs e)
-        {
-            Concatination.Text = JoinParamInfos(WpfParameterInfos(), null);
-        }
-
-        private void OnLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            Concatination.Text = JoinParamInfos(WpfParameterInfos(), null);
-        }
-
+        
         private void SubmitButton_OnClick(object sender, RoutedEventArgs e)
         {
             try
@@ -282,6 +272,21 @@ namespace ParameterRemapperUI
             {
                 return newValue;
             }
+        }
+
+        private void OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            Concatination.Text = JoinParamInfos(WpfParameterInfos(), null);
+        }
+
+        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Concatination.Text = JoinParamInfos(WpfParameterInfos(), null);
+        }
+
+        private void OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            Concatination.Text = JoinParamInfos(WpfParameterInfos(), null);
         }
     }
 }
