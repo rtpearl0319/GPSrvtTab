@@ -33,6 +33,7 @@ namespace GPSrvtTab
             
             RibbonPanel elecRibbonPanel = application.CreateRibbonPanel(tabName, "Electrical Circuiting");
             RibbonPanel sheetRibbonPanel = application.CreateRibbonPanel(tabName, "Sheet Management");
+            RibbonPanel manageRibbonPanel = application.CreateRibbonPanel(tabName, "Document Management");
             RibbonPanel updateRibbonPanel = application.CreateRibbonPanel(tabName, "Update");
             
             //-------------------------------------------------------------------------------------------------------
@@ -60,10 +61,22 @@ namespace GPSrvtTab
             sheetSetButton.ToolTip = "Create print set from selected schedule on sheet";
             sheetSetButton.LargeImage = LoadEmbeddedIcon(assembly, "GPSrvtTab.Resources.PrintSet32.png");
             
-            sheetRibbonPanel.AddSeparator();
-            
             //-------------------------------------------------------------------------------------------------------
-            
+
+            PushButtonData deleteFamilySymbol = new PushButtonData("cmdDeleteFamilySymbol",
+                "Delete Annotation Symbol", thisAssemblyPath, "GPSrvtTab.DeleteFamilySymbol");
+            deleteFamilySymbol.ToolTip = "Select An Element, Then Select Annotation Symbols To Delete From Its Family";
+            deleteFamilySymbol.Image = LoadEmbeddedIcon(assembly, "GPSrvtTab.Resources.DeleteFamilySymbol16.png");
+
+            PushButtonData deleteProjectParameters = new PushButtonData("cmdDeleteProjectParameters",
+                "Delete Project Parameters", thisAssemblyPath, "GPSrvtTab.DeleteProjectParameters");
+            deleteProjectParameters.ToolTip = "Select Project Parameters To Delete From The Active Model";
+            deleteProjectParameters.Image = LoadEmbeddedIcon(assembly, "GPSrvtTab.Resources.DeleteParameter16.png");
+
+            manageRibbonPanel.AddStackedItems(deleteFamilySymbol, deleteProjectParameters);
+
+            //-------------------------------------------------------------------------------------------------------
+
             PushButtonData CheckUpdate = new PushButtonData("cmdCheckUpdate",
                 "Check for updates", thisAssemblyPath, "GPSrvtTab.CheckUpdateCommand");
             

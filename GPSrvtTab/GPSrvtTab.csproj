@@ -151,6 +151,14 @@
       <EmbeddedResource Include="Resources\PrintSet32.png">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </EmbeddedResource>
+      <None Remove="Resources\DeleteParameter16.png" />
+      <EmbeddedResource Include="Resources\DeleteParameter16.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Resources\DeleteFamilySymbol16.png" />
+      <EmbeddedResource Include="Resources\DeleteFamilySymbol16.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
