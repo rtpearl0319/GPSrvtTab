@@ -6,7 +6,7 @@ using Autodesk.Revit.UI.Selection;
 namespace GPSrvtTab
 {
     [Transaction(TransactionMode.Manual)]
-    public class SheetSchedule : IExternalCommand
+    public class SheetSet : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -28,7 +28,7 @@ namespace GPSrvtTab
             ViewSchedule selectedSchedule;
             try
             {
-                selectedSchedule = pickSchedule(uidoc);
+                selectedSchedule = PickSchedule(uidoc);
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
@@ -68,15 +68,13 @@ namespace GPSrvtTab
                 return Result.Failed;
             }
 
-            if (!PrintSetSave(doc, sheetsInSchedule, selectedSchedule, matchingPrintSet))
-            {
-            }
-
             t.Commit();
+            
+            PrintSetSave(doc, sheetsInSchedule, selectedSchedule, matchingPrintSet);
             return Result.Succeeded;
         }
         
-        public ViewSchedule pickSchedule(UIDocument uidoc)
+        public ViewSchedule PickSchedule(UIDocument uidoc)
         {
             Reference pickedRef = uidoc.Selection.PickObject(ObjectType.Element, new ScheduleSelectionFilter(),
                 "Select a schedule on a sheet"); // Require the user to pick a schedule element in the model (placed schedule on a sheet)
@@ -104,10 +102,17 @@ namespace GPSrvtTab
 
             for (int i = 0; i < orderedFieldIds.Count; i++)
             {
+#if REVIT2020 || REVIT2021 || REVIT2022 || REVIT2023
                 if (definition.GetField(orderedFieldIds[i]).ParameterId.IntegerValue == (int)paramId)
                 {
                     return i;
                 }
+#else
+                if (definition.GetField(orderedFieldIds[i]).ParameterId.Value == (int)paramId)
+                {
+                    return i;
+                }
+#endif
             }
             return -1;
         }
@@ -142,60 +147,46 @@ namespace GPSrvtTab
 
         public bool PrintSetSave(Document doc, List<ViewSheet> sheetsInSchedule, ViewSchedule selectedSchedule, ElementId printSetId)
         {
-            
             ViewSet myViewSet = new ViewSet();
             foreach (ViewSheet view in sheetsInSchedule)
-            {
                 myViewSet.Insert(view);
-            }
 
             PrintManager printManager = doc.PrintManager;
+            printManager.SelectNewPrintDriver("Bluebeam PDF");
+            printManager.Apply();
             printManager.CombinedFile = true;
             printManager.PrintRange = PrintRange.Select;
 
-            ViewSheetSetting viewSheetSetting = printManager.ViewSheetSetting;
-            viewSheetSetting.CurrentViewSheetSet.Views = myViewSet; // Assign the views we collected
-            
-            try
+            // Handle an existing set with the same name BEFORE saving
+            if (printSetId != null)
             {
-                // Finally save the current view sheet set under the schedule name
-                viewSheetSetting.SaveAs(selectedSchedule.Name);
-                TaskDialog.Show("Success", "Print set saved.");  
-            }
-            catch (Exception)
-            {
-                TaskDialog tdPrompt = new TaskDialog("Save Print Set Failed")
+                TaskDialog tdPrompt = new TaskDialog("Print Set Exists")
                 {
                     MainInstruction = "There is already a print set with this name.",
-                    MainContent = "\nDo you want to delete the existing print set?",
+                    MainContent = "\nDo you want to replace it?",
                     CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No
                 };
-                
-                TaskDialogResult tdResult = tdPrompt.Show();
-
-                if (tdResult == TaskDialogResult.No ||tdResult == TaskDialogResult.Cancel)
-                {
+                if (tdPrompt.Show() != TaskDialogResult.Yes)
                     return false;
-                }
 
-                if (tdResult == TaskDialogResult.Yes)
+                using (Transaction txDel = new Transaction(doc, "Delete Previous Print Set"))
                 {
+                    txDel.Start();
                     doc.Delete(printSetId);
-                    TaskDialog.Show("Removed", "Previous print set deleted.");
+                    txDel.Commit();
                 }
-
-                // try
-                // {
-                //     // Finally save the current view sheet set under the schedule name
-                //     viewSheetSetting.SaveAs(selectedSchedule.Name);
-                //     TaskDialog.Show("Success", "Print set saved.");
-                // }
-                // catch (Exception)
-                // {
-                //     TaskDialog.Show("Error", "Cannot Save File");
-                //     return false;
-                // }
             }
+
+            using (Transaction tx = new Transaction(doc, "Print Set"))
+            {
+                tx.Start();
+                ViewSheetSetting viewSheetSetting = printManager.ViewSheetSetting; // acquired fresh, after any delete
+                viewSheetSetting.CurrentViewSheetSet.Views = myViewSet;
+                viewSheetSetting.SaveAs(selectedSchedule.Name);
+                tx.Commit();
+            }
+
+            TaskDialog.Show("Success", "Print set saved.");
             return true;
         }
     }

@@ -32,7 +32,7 @@ namespace GPSrvtTab
             string thisAssemblyPath = Assembly.GetExecutingAssembly().Location;
             
             RibbonPanel elecRibbonPanel = application.CreateRibbonPanel(tabName, "Electrical Circuiting");
-            RibbonPanel sheetRibbonPanel = application.CreateRibbonPanel(tabName, "Sheet Revisions");
+            RibbonPanel sheetRibbonPanel = application.CreateRibbonPanel(tabName, "Sheet Management");
             RibbonPanel updateRibbonPanel = application.CreateRibbonPanel(tabName, "Update");
             
             //-------------------------------------------------------------------------------------------------------
@@ -53,29 +53,14 @@ namespace GPSrvtTab
             
             //-------------------------------------------------------------------------------------------------------
             
-            PushButtonData sheetSchedule = new PushButtonData("cmdSheetSchedule",
-                "Print Set", thisAssemblyPath, "GPSrvtTab.SheetSchedule");
+            PushButtonData sheetSet = new PushButtonData("cmdSheetSet",
+                "Print Set", thisAssemblyPath, "GPSrvtTab.SheetSet");
             
-            PushButton sheetScheduleButton = sheetRibbonPanel.AddItem(sheetSchedule) as PushButton;
-            sheetScheduleButton.ToolTip = "Create print set from selected schedule on sheet";
-            sheetScheduleButton.LargeImage = LoadEmbeddedIcon(assembly, "GPSrvtTab.Resources.PrintSet32.png");
+            PushButton sheetSetButton = sheetRibbonPanel.AddItem(sheetSet) as PushButton;
+            sheetSetButton.ToolTip = "Create print set from selected schedule on sheet";
+            sheetSetButton.LargeImage = LoadEmbeddedIcon(assembly, "GPSrvtTab.Resources.PrintSet32.png");
             
             sheetRibbonPanel.AddSeparator();
-            
-            PushButtonData SheetRevision = new PushButtonData("cmdSheetRevision",
-                "Sheet Revision", thisAssemblyPath, "GPSrvtTab.SheetRevision");
-            
-            SheetRevision.Image = LoadEmbeddedIcon(assembly, "GPSrvtTab.Resources.SheetRev16.png");
-            
-            PushButtonData AwsSheetRevision = new PushButtonData("cmdAwsSheetRevision",
-                "AWS Revision", thisAssemblyPath, "GPSrvtTab.AwsSheetRevision");
-            
-            AwsSheetRevision.Image = LoadEmbeddedIcon(assembly, "GPSrvtTab.Resources.AwsRev16.png");
-            
-            var sheetStack = sheetRibbonPanel.AddStackedItems(SheetRevision, AwsSheetRevision);
-
-            sheetStack[0].ToolTip = "Adds Dots For Schedule Issuance based On Clouds On Sheet";
-            sheetStack[1].ToolTip = "Set AWS Shared Sheet Revision Checkbox";
             
             //-------------------------------------------------------------------------------------------------------
             
