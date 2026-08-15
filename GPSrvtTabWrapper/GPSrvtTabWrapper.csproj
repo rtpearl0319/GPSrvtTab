@@ -4,8 +4,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
-        <TargetFramework>net462</TargetFramework>
-        <Configurations>Debug;Release;Debug R27;Release R27</Configurations>
+        <TargetFramework>net8.0</TargetFramework>
+        <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
@@ -14,7 +14,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Autodesk.Revit.SDK" Version="2014.0.0">
+        <PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2022.*">
             <ExcludeAssets>runtime</ExcludeAssets>
         </PackageReference>
     </ItemGroup>
@@ -22,16 +22,6 @@
     <ItemGroup>
         <None Remove="Resources\zstdWrapperGO.exe" />
         <EmbeddedResource Include="Resources\zstdWrapperGO.exe">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </EmbeddedResource>
-        
-        <None Remove="Resources\GPSRevitTabVersionR20.zst" />
-        <EmbeddedResource Include="Resources\GPSRevitTabVersionR20.zst">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </EmbeddedResource>
-        
-        <None Remove="Resources\GPSRevitTabVersionR21.zst" />
-        <EmbeddedResource Include="Resources\GPSRevitTabVersionR21.zst">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
         
