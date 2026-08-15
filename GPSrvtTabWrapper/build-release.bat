@@ -10,6 +10,7 @@ copy /Y ..\GPSrvtTab\bin\GPSRevitTabVersionR23.zst Resources\GPSRevitTabVersionR
 copy /Y ..\GPSrvtTab\bin\GPSRevitTabVersionR24.zst Resources\GPSRevitTabVersionR24.zst
 copy /Y ..\GPSrvtTab\bin\GPSRevitTabVersionR25.zst Resources\GPSRevitTabVersionR25.zst
 copy /Y ..\GPSrvtTab\bin\GPSRevitTabVersionR26.zst Resources\GPSRevitTabVersionR26.zst
+copy /Y ..\GPSrvtTab\bin\GPSRevitTabVersionR27.zst Resources\GPSRevitTabVersionR27.zst
 
 rem Build the project in Release mode
 dotnet build -c "Release" -p:Platform="Any CPU"

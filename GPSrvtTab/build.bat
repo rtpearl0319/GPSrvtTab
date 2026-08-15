@@ -29,6 +29,10 @@ echo ""
 echo "Building GPSRevitTab for Revit 2026"
 dotnet build -c "Debug R26" -p:Platform="Any CPU"
 
+echo ""
+echo "Building GPSRevitTab for Revit 2027"
+dotnet build -c "Debug R27" -p:Platform="Any CPU"
+
 zstd -f -19 -T0 -v "bin\Any CPU\Debug R20\net471-windows\GPSRvtTab.dll" -o "bin\GPSRevitTabVersionR20.zst"
 zstd -f -19 -T0 -v "bin\Any CPU\Debug R21\net48-windows\GPSRvtTab.dll" -o "bin\GPSRevitTabVersionR21.zst"
 zstd -f -19 -T0 -v "bin\Any CPU\Debug R22\net48-windows\GPSRvtTab.dll" -o "bin\GPSRevitTabVersionR22.zst"
@@ -36,5 +40,6 @@ zstd -f -19 -T0 -v "bin\Any CPU\Debug R23\net48-windows\GPSRvtTab.dll" -o "bin\G
 zstd -f -19 -T0 -v "bin\Any CPU\Debug R24\net48-windows\GPSRvtTab.dll" -o "bin\GPSRevitTabVersionR24.zst"
 zstd -f -19 -T0 -v "bin\Any CPU\Debug R25\net8.0-windows\GPSRvtTab.dll" -o "bin\GPSRevitTabVersionR25.zst"
 zstd -f -19 -T0 -v "bin\Any CPU\Debug R26\net8.0-windows\GPSRvtTab.dll" -o "bin\GPSRevitTabVersionR26.zst"
+zstd -f -19 -T0 -v "bin\Any CPU\Debug R27\net10.0-windows\GPSRvtTab.dll" -o "bin\GPSRevitTabVersionR27.zst"
 
 endlocal

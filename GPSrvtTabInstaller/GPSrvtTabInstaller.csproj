@@ -6,7 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>12</LangVersion>
-        <Configurations>Debug;Release;Debug R14</Configurations>
+        <Configurations>Debug;Release;Debug R14;Debug R27;Release R27</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 

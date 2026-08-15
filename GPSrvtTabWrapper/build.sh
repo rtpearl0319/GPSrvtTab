@@ -5,5 +5,6 @@ cp ..\GPSrvtTab/bin/GPSRevitTabVersionR23.zst Resources/GPSRevitTabVersionR23.zs
 cp ..\GPSrvtTab/bin/GPSRevitTabVersionR24.zst Resources/GPSRevitTabVersionR24.zst
 cp ..\GPSrvtTab/bin/GPSRevitTabVersionR25.zst Resources/GPSRevitTabVersionR25.zst
 cp ..\GPSrvtTab/bin/GPSRevitTabVersionR26.zst Resources/GPSRevitTabVersionR26.zst
+cp ..\GPSrvtTab/bin/GPSRevitTabVersionR27.zst Resources/GPSRevitTabVersionR27.zst
 
 dotnet build -c "Debug" -p:Platform="Any CPU"

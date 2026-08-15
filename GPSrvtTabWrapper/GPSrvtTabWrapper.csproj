@@ -5,6 +5,8 @@
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <TargetFramework>net462</TargetFramework>
+        <Configurations>Debug;Release;Debug R27;Release R27</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
